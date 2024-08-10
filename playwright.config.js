@@ -54,6 +54,7 @@ module.exports = defineConfig({
             fullPage: true,
             mode: 'only-on-failure',
         },
+        testIdAttribute: 'data-test',
     },
 
     /* Configure projects for major browsers */

@@ -10,28 +10,27 @@ export class InventoryPage extends BaseSwagLabPage {
 
     addItemToCartButton = this.page.locator('[id^="add-to-cart"]');
 
-    sortSelect = this.page.locator('[data-test="product-sort-container"]');
+    sortSelect = this.page.getByTestId('product-sort-container');
 
-    inventoryItemPrice = this.page.locator('[data-test="inventory-item-price"]');
+    inventoryItemPrice = this.page.getByTestId('inventory-item-price');
 
-    inventoryItemTitle = this.page.locator('[data-test="inventory-item-name"]');
+    inventoryItemTitle = this.page.getByTestId('inventory-item-name');
 
     async addItemToCartById(id) {
         await this.addItemToCartButton.nth(id).click();
     }
 
-    async selectSortType(sortType) {
-        await this.sortSelect.selectOption(sortType);
+    async selectSortOption(type) {
+        await this.sortSelect.selectOption({ label: `${type}` });
     }
 
     async getProductsNames() {
-        const productNames = await this.page.$$eval('inventoryItemTitle', (elements) => elements.map((element) => element.textContent?.trim()));
+        const productNames = (await this.page.locator('[class^="inventory_item_name"]').allInnerTexts()).map((element) => element.trim());
         return productNames;
     }
 
     async getProductPrices() {
-        // @ts-ignore
-        const productPrices = await this.page.$$eval('inventoryItemPrice', (elements) => elements.map((element) => parseFloat(element.textContent?.replace('$', '').trim())));
+        const productPrices = (await this.page.locator('[class^="inventory_item_price"]').allInnerTexts()).map((element) => parseFloat(element.replace('$', '').trim()));
         return productPrices;
     }
 }
