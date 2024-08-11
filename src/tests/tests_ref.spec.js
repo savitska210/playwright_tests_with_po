@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 /* eslint-disable playwright/no-conditional-expect */
 /* eslint-disable playwright/no-conditional-in-test */
 /* eslint-disable linebreak-style */
@@ -10,9 +11,9 @@ test.describe('Tests Unit 10', () => {
     test.beforeEach(async (
         /** @type {{ app: import('../pages/Application').Application }} */{ app },
     ) => {
-        const user = users.find((u) => u.username === 'standard_user');
+        const { username, password } = users.standardUser;
         await app.login.navigate();
-        await app.login.performLogin(user.username, user.password);
+        await app.login.performLogin(username, password);
         await expect(app.inventory.headerTitle).toBeVisible();
         console.log(`Running ${test.info().title}...`);
     });
