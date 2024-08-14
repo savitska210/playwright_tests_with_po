@@ -1,14 +1,12 @@
-/* eslint-disable no-case-declarations */
-/* eslint-disable default-case */
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable class-methods-use-this */
+/* eslint-disable no-case-declarations */
 import { expect } from '@playwright/test';
 // @ts-check
-import { BaseSwagLabPage } from './BaseSwagLab.page';
+import { BasePage } from './Base.page';
 
-export class InventoryPage extends BaseSwagLabPage {
+export class InventoryPage extends BasePage {
     url = '/inventory.html';
-
-    headerTitle = this.page.locator('.title');
 
     inventoryItems = this.page.locator('.inventory_item');
 
@@ -20,24 +18,31 @@ export class InventoryPage extends BaseSwagLabPage {
 
     inventoryItemTitle = this.page.getByTestId('inventory-item-name');
 
+    inventoryItemDesc = this.page.getByTestId('inventory-item-desc');
+
+    // Adding Item to the cart by id per page
     async addItemToCartById(id) {
         await this.addItemToCartButton.nth(id).click();
     }
 
+    // Selecting kind of sorting by Type
     async selectSortOption(type) {
         await this.sortSelect.selectOption({ label: `${type}` });
     }
 
+    // get array of all Products names
     async getProductsNames() {
         const productNames = await this.page.locator('[class^="inventory_item_name"]').allInnerTexts();
         return productNames.map((element) => element.trim());
     }
 
+    // get array of all Products prices
     async getProductPrices() {
         const productPrices = await this.page.locator('[class^="inventory_item_price"]').allInnerTexts();
         return productPrices.map((element) => parseFloat(element.replace('$', '').trim()));
     }
 
+    // testing products sorting feature
     async sortInventoriesTest(sortBy, productNames, productPrices) {
         switch (sortBy) {
             case 'Name (A to Z)':
@@ -63,5 +68,33 @@ export class InventoryPage extends BaseSwagLabPage {
             default:
                 throw new Error('Sort option is not correct');
         }
+    }
+
+    // get all Products locators
+    async getAllProducts() {
+        const array = await this.inventoryItems.all();
+        return array;
+    }
+
+    // get N random products from Products array
+    getRandomProducts(allProducts, count) {
+        const allRandomProducts = allProducts.sort(() => Math.random() - 0.5);
+        const randomProducts = allRandomProducts.slice(0, count);
+        return randomProducts;
+    }
+
+    // adding random products to the cart
+    async addRandomProductsToCart() {
+        const allProducts = await this.getAllProducts();
+        const randomProducts = this.getRandomProducts(allProducts, 2);
+        const products = [];
+        for await (const element of randomProducts) {
+            const title = await element.getByTestId('inventory-item-name').innerText();
+            const desc = await element.getByTestId('inventory-item-desc').innerText();
+            const price = await element.getByTestId('inventory-item-price').innerText();
+            products.push({ title, desc, price });
+            await element.locator('[id^="add-to-cart"]').click();
+        }
+        return products;
     }
 }
