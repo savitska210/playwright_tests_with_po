@@ -1,3 +1,9 @@
+/* eslint-disable playwright/expect-expect */
+/* eslint-disable linebreak-style */
+/* eslint-disable playwright/no-conditional-expect */
+/* eslint-disable playwright/no-conditional-in-test */
+/* eslint-disable linebreak-style */
+
 import { expect } from '@playwright/test';
 import { test } from '../fixtures/base';
 import { users } from '../test_data/users';
