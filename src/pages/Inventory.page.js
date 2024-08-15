@@ -4,6 +4,7 @@
 import { expect } from '@playwright/test';
 // @ts-check
 import { BasePage } from './Base.page';
+import { getRandomProducts } from '../utils/helpers';
 
 export class InventoryPage extends BasePage {
     url = '/inventory.html';
@@ -76,17 +77,10 @@ export class InventoryPage extends BasePage {
         return array;
     }
 
-    // get N random products from Products array
-    getRandomProducts(allProducts, count) {
-        const allRandomProducts = allProducts.sort(() => Math.random() - 0.5);
-        const randomProducts = allRandomProducts.slice(0, count);
-        return randomProducts;
-    }
-
     // adding random products to the cart
     async addRandomProductsToCart() {
         const allProducts = await this.getAllProducts();
-        const randomProducts = this.getRandomProducts(allProducts, 2);
+        const randomProducts = getRandomProducts(allProducts, 2);
         const products = [];
         for await (const element of randomProducts) {
             const title = await element.getByTestId('inventory-item-name').innerText();

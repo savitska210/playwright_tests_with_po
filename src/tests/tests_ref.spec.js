@@ -55,33 +55,24 @@ test.describe('Tests Unit 10', () => {
     /** @type {{ app: import('../pages/Application').Application }} */{ app },
     ) => {
         // Adding 2 random products to the cart
-        const products = await app.inventory.addRandomProductsToCart();
-
-        // Verify count of product in the cart  (on the cart badge at the header)
-        test.info().annotations.push({
-            type: 'check',
-            description: 'Verify count of product in the cart  (on the cart badge at the header)',
+        const products = await test.step('Verify count of product in the cart  (on the cart badge at the header)', async () => {
+            const addedProducts = app.inventory.addRandomProductsToCart();
+            // Verify count of product in the cart  (on the cart badge at the header)
+            await expect(app.inventory.header.shoppingCartBadge, 'Verify count of product in the cart  (on the cart badge at the header)').toHaveText('2');
+            return addedProducts;
         });
-
-        await expect(app.inventory.header.shoppingCartBadge, 'Verify count of product in the cart  (on the cart badge at the header)').toHaveText('2');
 
         // go to the Shopping cart page
         await app.inventory.header.navigateToCartFromHeader();
 
-        // Verify count of products at the Shopping cart page
-        test.info().annotations.push({
-            type: 'check',
-            description: 'Verify count of products at the Shopping cart page',
+        await test.step('Verify count of products at the Shopping cart page', async () => {
+            await expect(app.shoppingCart.cartItems, 'Verify count of products at the Shopping cart page').toHaveCount(2);
         });
-        await expect(app.shoppingCart.cartItems, 'Verify count of products at the Shopping cart page').toHaveCount(2);
 
-        // Verify correct products in the cart
-        test.info().annotations.push({
-            type: 'check',
-            description: 'Verify correct products in the cart - contain titles, descriptions and prices of products',
+        await test.step('Verify correct products in the cart', async () => {
+            await expect(app.shoppingCart.cartInventoryItemTitle, 'Verify correct products in the cart - contain correct titles').toHaveText(products.map(({ title }) => title));
+            await expect(app.shoppingCart.cartInventoryItemDesc, 'Verify correct products in the cart - contain correct descriptions').toHaveText(products.map(({ desc }) => desc));
+            await expect(app.shoppingCart.cartInventoryItemPrice, 'Verify correct products in the cart - contain correct prices').toHaveText(products.map(({ price }) => price));
         });
-        await expect(app.shoppingCart.cartInventoryItemTitle, 'Verify correct products in the cart - contain correct titles').toHaveText(products.map(({ title }) => title));
-        await expect(app.shoppingCart.cartInventoryItemDesc, 'Verify correct products in the cart - contain correct descriptions').toHaveText(products.map(({ desc }) => desc));
-        await expect(app.shoppingCart.cartInventoryItemPrice, 'Verify correct products in the cart - contain correct prices').toHaveText(products.map(({ price }) => price));
     });
 });
