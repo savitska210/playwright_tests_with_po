@@ -3,7 +3,6 @@
 import { LoginPage } from './Login.page';
 import { InventoryPage } from './Inventory.page';
 import { ShoppingCartPage } from './ShoppingCart.page';
-import { BaseSwagLabPage } from './BaseSwagLab.page';
 
 /**
  * Represents a Playwright page.
@@ -31,15 +30,12 @@ export class Application extends Page {
     /**
      * @type {InventoryPage}
      */
+    // @ts-ignore
     inventory = new InventoryPage(this.page);
 
     /**
      * @type {ShoppingCartPage}
      */
+    // @ts-ignore
     shoppingCart = new ShoppingCartPage(this.page);
-
-    /**
-     * @type {BaseSwagLabPage}
-     */
-    baseSwagLab = new BaseSwagLabPage(this.page);
 }

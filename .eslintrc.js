@@ -35,5 +35,6 @@ module.exports = {
             ignoreRegExpLiterals: true,
         }],
         'import/prefer-default-export': 'off',
+        'linebreak-style': 'off',
     },
 };
