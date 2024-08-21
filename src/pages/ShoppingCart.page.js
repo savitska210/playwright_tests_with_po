@@ -20,6 +20,8 @@ export class ShoppingCartPage extends BasePage {
 
     cartInventoryItemDesc = this.root.getByTestId('inventory-item-desc');
 
+    buttonCheckout = this.page.getByTestId('checkout');
+
     // get all Products locators in the Cart
     async getAllCartProducts() {
         const array = await this.cartInventoryItems.all();
@@ -40,5 +42,18 @@ export class ShoppingCartPage extends BasePage {
     // removing product from the cart by id
     async removeCartItemById(id) {
         await this.cartItems.nth(id).locator(this.removeItemSelector).click();
+    }
+
+    // go to Checkout from Shopping Cart
+    async gotoCheckoutFromCart() {
+        await this.buttonCheckout.click();
+    }
+
+    async removeAllItems() {
+        while (await this.cartItems.count() > 0) {
+            const firstItem = this.cartItems.first();
+            const removeButton = firstItem.locator(this.removeItemSelector);
+            await removeButton.click();
+        }
     }
 }

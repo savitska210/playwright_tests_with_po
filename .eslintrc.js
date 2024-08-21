@@ -36,5 +36,11 @@ module.exports = {
         }],
         'import/prefer-default-export': 'off',
         'linebreak-style': 'off',
+        'import/no-extraneous-dependencies': [
+            'error',
+            {
+                devDependencies: ['**/*.test.js', '**/*.spec.js'],
+            },
+        ],
     },
 };
