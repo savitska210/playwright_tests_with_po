@@ -1,5 +1,3 @@
-import { faker } from '@faker-js/faker';
-
 // get N random products from Products array
 /**
  * @param {Array} allProducts
@@ -12,19 +10,9 @@ export function getRandomProducts(allProducts, count) {
     return randomProducts;
 }
 
-export function generateFirstName() {
-    const firstName = faker.person.firstName();
-    return firstName;
-}
-
-export function generateLastName() {
-    const lastName = faker.person.lastName();
-    return lastName;
-}
-
-export function generatePostalCode() {
-    const postalCode = faker.location.zipCode();
-    return postalCode;
+export function calculateSubTotal(products) {
+    const subTotalSumVar = products.reduce((sum, product) => sum + product.totalProductSum, 0);
+    return subTotalSumVar;
 }
 
 export function calculateTotalSum(subTotal, taxPercent) {

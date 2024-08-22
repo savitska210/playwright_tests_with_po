@@ -1,3 +1,5 @@
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable radix */
 // @ts-check
 import { BasePage } from './Base.page';
 
@@ -9,8 +11,6 @@ export class CheckoutStep2Page extends BasePage {
     cartItemSelector = '.cart_item';
 
     cartItems = this.root.locator(this.cartItemSelector);
-
-    // cartInventoryItems = this.page.locator('.cart_item');
 
     cartInventoryItemPrice = this.root.getByTestId('inventory-item-price');
 

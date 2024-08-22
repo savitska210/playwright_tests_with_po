@@ -1,14 +1,13 @@
+/* eslint-disable no-await-in-loop */
 // @ts-check
 import { BasePage } from './Base.page';
 
 export class ShoppingCartPage extends BasePage {
     url = '/cart.html';
 
-    cartItemSelector = '.cart_item';
-
     root = this.page.getByTestId('cart-list');
 
-    cartItems = this.root.locator(this.cartItemSelector);
+    cartItems = this.root.locator('.cart_item');
 
     removeItemSelector = '[id^="remove"]';
 
@@ -30,7 +29,7 @@ export class ShoppingCartPage extends BasePage {
 
     // async below added to show the function returns a promise
     async getCartItemByName(name) {
-        return this.page.locator(this.cartItemSelector, { hasText: name });
+        return this.page.locator('.cart_item', { hasText: name });
     }
 
     // removing product from the cart by name

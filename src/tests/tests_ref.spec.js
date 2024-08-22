@@ -5,13 +5,15 @@
 import { expect } from '@playwright/test';
 import { test } from '../fixtures/base';
 import { users } from '../test_data/users';
-import { calculateTotalSum } from '../utils/helpers';
+import { calculateSubTotal, calculateTotalSum } from '../utils/helpers';
 
 test.describe('Tests Unit 10', () => {
+    const {
+        username, password, firstName, lastName, postalCode,
+    } = users.standardUser;
     test.beforeEach(async (
         /** @type {{ app: import('../pages/Application').Application }} */{ app },
     ) => {
-        const { username, password } = users.standardUser;
         // Log in
         await app.login.navigate();
         await app.login.performLogin(username, password);
@@ -22,7 +24,7 @@ test.describe('Tests Unit 10', () => {
     });
 
     test.afterEach(async (
-        /** @type {{ app: import('../pages/Application').Application }} */{ app }, testInfo) => {
+        /** @type {{ app: import('../pages/Application').Application }} */{ }, testInfo) => {
         // Remove all items into the cart
         // await app.shoppingCart.navigate();
         // await app.shoppingCart.removeAllItems();
@@ -88,7 +90,7 @@ test.describe('Tests Unit 10', () => {
     });
 
     test('Verify the transition to the checkout from the cart', async (
-        /** @type {{ app: import('../pages/Application').Application }} */{ app }, testInfo) => {
+        /** @type {{ app: import('../pages/Application').Application }} */{ app }) => {
         // Adding 2 random products to the cart
         const products = await test.step('Verify count of product in the cart  (on the cart badge at the header)', async () => {
             const addedProducts = app.inventory.addRandomProductsToCart();
@@ -106,17 +108,17 @@ test.describe('Tests Unit 10', () => {
         // Verify URL of Checkout first step form
         await test.step('Verify URL of Checkout first step form', async () => {
             const expectedUrl = app.checkoutStep1.url;
-            await app.checkoutStep1.verifyPageURL(testInfo, expectedUrl);
+            await expect(app.page).toHaveURL(expectedUrl);
         });
 
         await app.checkoutStep1.navigate();
-        await app.checkoutStep1.submitValidDataForm();
+        await app.checkoutStep1.submitCheckoutForm(firstName, lastName, postalCode);
         await app.checkoutStep2.navigate();
 
         // Verify URL Checkout second step form
         await test.step('Verify URL Checkout second step form', async () => {
             const expectedUrl = app.checkoutStep2.url;
-            await app.checkoutStep2.verifyPageURL(testInfo, expectedUrl);
+            await expect(app.page).toHaveURL(expectedUrl);
         });
 
         // Verify count of products at the Checkout
@@ -130,13 +132,14 @@ test.describe('Tests Unit 10', () => {
             await expect(app.checkoutStep2.cartInventoryItemDesc, 'Verify correct products in the cart - contain correct descriptions').toHaveText(products.map(({ desc }) => desc));
             await expect(app.checkoutStep2.cartInventoryItemPrice, 'Verify correct products in the cart - contain correct prices').toHaveText(products.map(({ price }) => price));
         });
-        let subTotalSum;
+
         // Verify correct subTotal sum at the Checkout
+        let subTotalSum;
         await test.step('Verify correct subTotal sum at the Checkout', async () => {
             const productsCheckout = await app.checkoutStep2.getAllCartProducts();
-            subTotalSum = productsCheckout.reduce((sum, product) => sum + product.totalProductSum, 0);
+            subTotalSum = calculateSubTotal(productsCheckout);
             const currentSum = await app.checkoutStep2.subTotal.textContent();
-            await expect(`Item total: $${subTotalSum}`, 'Verify correct sub Total sum into the Checkout').toEqual(currentSum);
+            expect(`Item total: $${subTotalSum}`, 'Verify correct sub Total sum into the Checkout').toEqual(currentSum);
         });
 
         // Verify correct Total sum at the Checkout
@@ -144,7 +147,7 @@ test.describe('Tests Unit 10', () => {
             const taxPercent = 0.08;
             const totalSum = calculateTotalSum(subTotalSum, taxPercent);
             const currentTotal = await app.checkoutStep2.total.textContent();
-            await expect(`Total: $${totalSum}`, 'Verify correct Total sum into the Checkout').toEqual(currentTotal);
+            expect(`Total: $${totalSum}`, 'Verify correct Total sum into the Checkout').toEqual(currentTotal);
         });
     });
 });

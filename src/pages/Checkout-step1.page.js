@@ -1,6 +1,5 @@
 // @ts-check
 import { BasePage } from './Base.page';
-import { generateFirstName, generateLastName, generatePostalCode } from '../utils/helpers';
 
 export class CheckoutStep1Page extends BasePage {
     url = '/checkout-step-one.html';
@@ -13,10 +12,7 @@ export class CheckoutStep1Page extends BasePage {
 
     submitButton = this.page.getByTestId('continue');
 
-    async submitValidDataForm() {
-        const firstName = generateFirstName();
-        const lastName = generateLastName();
-        const postalCode = generatePostalCode();
+    async submitCheckoutForm(firstName, lastName, postalCode) {
         await this.inputFirstName.fill(firstName);
         await this.inputLastName.fill(lastName);
         await this.inputZipCode.fill(postalCode);
