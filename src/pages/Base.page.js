@@ -21,4 +21,12 @@ export class BasePage {
     async navigate() {
         await this.page.goto(this.url);
     }
+
+    // async verifyPageURL(testInfo, expectedUrl) {
+    //     const { baseURL } = testInfo.project.use;
+    //     const currentURL = await this.getUrl();
+    //     const fullExpectedUrl = baseURL + expectedUrl;
+
+    //     await expect(currentURL).toBe(fullExpectedUrl);
+    // }
 }

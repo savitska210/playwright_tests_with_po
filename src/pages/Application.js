@@ -3,7 +3,8 @@
 import { LoginPage } from './Login.page';
 import { InventoryPage } from './Inventory.page';
 import { ShoppingCartPage } from './ShoppingCart.page';
-
+import { CheckoutStep1Page } from './Checkout-step1.page';
+import { CheckoutStep2Page } from './Checkout-step2.page';
 /**
  * Represents a Playwright page.
  */
@@ -30,12 +31,24 @@ export class Application extends Page {
     /**
      * @type {InventoryPage}
      */
-    // @ts-ignore
+
     inventory = new InventoryPage(this.page);
 
     /**
      * @type {ShoppingCartPage}
      */
-    // @ts-ignore
+
     shoppingCart = new ShoppingCartPage(this.page);
+
+    /**
+     * @type {CheckoutStep1Page}
+     */
+
+    checkoutStep1 = new CheckoutStep1Page(this.page);
+
+    /**
+     * @type {CheckoutStep2Page}
+     */
+
+    checkoutStep2 = new CheckoutStep2Page(this.page);
 }
